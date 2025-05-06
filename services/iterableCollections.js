@@ -147,7 +147,11 @@ function saveMapToFile(map, filename = 'fields.json') {
 }
 saveMapToFile(deepCollectPrimitiveFields(person));
 
-function restoreNestedObject(flatObj) {
+const fs = require('fs');
+
+function restoreNestedObjectFromFile(filename) {
+    const json = fs.readFileSync(filename, 'utf-8');
+    const flatObj = JSON.parse(json);
     const result = {};
 
     for (const [path, value] of Object.entries(flatObj)) {
@@ -156,7 +160,6 @@ function restoreNestedObject(flatObj) {
 
         for (let i = 0; i < keys.length; i++) {
             const key = keys[i];
-
             if (i === keys.length - 1) {
                 current[key] = value;
             } else {
@@ -170,3 +173,4 @@ function restoreNestedObject(flatObj) {
 
     return result;
 }
+console.log(restoreNestedObjectFromFile('fields.json'));
