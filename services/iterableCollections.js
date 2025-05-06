@@ -119,21 +119,54 @@ function deepCollectPrimitiveFields(obj, map = new Map(), seen = new WeakSet(), 
         if (value === null || typeof value !== 'object') {
             map.set(newPath, value);
         } else  {
-            deepCollectPathsAndValues(value, map, seen, newPath);
+            deepCollectPrimitiveFields(value, map, seen, newPath);
         }
     }
     return map;
 }
 console.log(deepCollectPrimitiveFields(person));
-//TODO Fix the mistake with address.location
 
-function saveMapToFile(map, filename){
-    //TODO
-    // fs.writeFileSync(filename, JSON.stringify(map)); ---????
+
+function saveMapToFile(map, filename = 'fields.json') {
+    let json = '{\n';
+
+    let i = 0;
+    for (const [key, value] of map) {
+        const line = `  ${JSON.stringify(key)}: ${JSON.stringify(value)}`;
+        json += line;
+        if (i < map.size - 1) json += ',\n';
+        i++;
+    }
+
+    json += '\n}';
+
+    const fs = require('fs');
+    fs.writeFileSync(filename, json, 'utf-8');
+
+    console.log(`Saved to ${filename}`);
 }
+saveMapToFile(deepCollectPrimitiveFields(person));
 
-function createObjFromFile(filename){
-    obj = {};
-    //TODO
-    return obj;
+function restoreNestedObject(flatObj) {
+    const result = {};
+
+    for (const [path, value] of Object.entries(flatObj)) {
+        const keys = path.split('.');
+        let current = result;
+
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+
+            if (i === keys.length - 1) {
+                current[key] = value;
+            } else {
+                if (!(key in current)) {
+                    current[key] = {};
+                }
+                current = current[key];
+            }
+        }
+    }
+
+    return result;
 }
