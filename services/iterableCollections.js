@@ -124,7 +124,7 @@ function deepCollectPrimitiveFields(obj, map = new Map(), seen = new WeakSet(), 
     }
     return map;
 }
-console.log(deepCollectPrimitiveFields(person));
+//console.log(deepCollectPrimitiveFields(person));
 
 
 function saveMapToFile(map, filename = 'fields.json') {
@@ -173,4 +173,5 @@ function restoreNestedObjectFromFile(filename) {
 
     return result;
 }
-console.log(restoreNestedObjectFromFile('fields.json'));
+//console.log(restoreNestedObjectFromFile('fields.json'));
+module.exports = { restoreNestedObjectFromFile };
